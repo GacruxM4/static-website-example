@@ -28,14 +28,23 @@ pipeline {
                    sh '''
                        docker stop $CONTAINER_NAME || true
                        docker rm $CONTAINER_NAME || true
-                       docker run --name $CONTAINER_NAME -d -p 5000:5000 $USERNAME/$IMAGE_NAME:$BUILD_TAG
+                       docker run --name $CONTAINER_NAME -d -p 5000:80 $USERNAME/$IMAGE_NAME:$BUILD_TAG
                        sleep 5
                    '''
                }
            }
        }
 
-       
+       stage ('Test container') {
+           agent any
+           steps {
+               script{
+                   sh '''
+                       curl http://localhost:5000 | grep -iq "Dimension"
+                   '''
+               }
+           }
+       }
 
        stage ('clean env and save artifact') {
            agent any
@@ -65,7 +74,9 @@ pipeline {
 					catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
 						script{ 
 							sh'''
-								ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_STAGING_HOST} docker run --name $CONTAINER_NAME -d -e PORT=5000 -p 5000:5000 $USERNAME/$IMAGE_NAME:$BUILD_TAG
+								ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_STAGING_HOST} docker stop $CONTAINER_NAME
+							ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_STAGING_HOST} docker rm $CONTAINER_NAME
+								ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_STAGING_HOST} docker run --name $CONTAINER_NAME -d -p 5000:80 $USERNAME/$IMAGE_NAME:$BUILD_TAG
 							'''
 						}
 					}
@@ -86,7 +97,9 @@ pipeline {
 								input message: 'Do you want to approve the deploy in production?', ok: 'Yes'
 							}
 							sh'''
-								ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_PRODUCTION_HOST} docker run --name $CONTAINER_NAME -d -e PORT=5000 -p 5000:5000 $USERNAME/$IMAGE_NAME:$BUILD_TAG
+								ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_PRODUCTION_HOST} docker stop $CONTAINER_NAME
+								ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_PRODUCTION_HOST} docker rm $CONTAINER_NAME
+								ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_PRODUCTION_HOST} docker run --name $CONTAINER_NAME -d -p 5000:80 $USERNAME/$IMAGE_NAME:$BUILD_TAG
 							'''
 						}
 					}
