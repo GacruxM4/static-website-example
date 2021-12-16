@@ -40,7 +40,7 @@ pipeline {
            steps {
                script{
                    sh '''
-                       curl http://localhost | grep -iq "Aurélien Dimension"
+                       curl http://localhost:5000 | grep -iq "Aurélien Dimension"
                    '''
                }
            }
