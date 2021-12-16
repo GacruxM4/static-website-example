@@ -13,7 +13,7 @@ pipeline {
     stages{
 
        stage ('Build Image'){
-           agent any
+	       agent { label 'agent-1'}
            steps {
                script{
                    sh 'docker build -t $USERNAME/$IMAGE_NAME:$BUILD_TAG .'
@@ -22,7 +22,7 @@ pipeline {
        }
 
        stage ('Run test container') {
-           agent any
+           agent { label 'agent-1'}
            steps {
                script{
                    sh '''
@@ -36,7 +36,7 @@ pipeline {
        }
 
        stage ('Test container') {
-           agent any
+           agent { label 'agent-1'}
            steps {
                script{
                    sh '''
@@ -47,7 +47,7 @@ pipeline {
        }
 
        stage ('clean env and save artifact') {
-           agent any
+           agent { label 'agent-1'}
            environment{
                PASSWORD = credentials('dockerhub_password')
            }
@@ -56,9 +56,9 @@ pipeline {
                    sh '''
                        docker login -u $USERNAME -p $PASSWORD
                        docker push $USERNAME/$IMAGE_NAME:$BUILD_TAG
-                       docker stop $CONTAINER_NAME || true
-                       docker rm $CONTAINER_NAME || true
-                       docker rmi $USERNAME/$IMAGE_NAME:$BUILD_TAG
+                       # docker stop $CONTAINER_NAME || true
+                       # docker rm $CONTAINER_NAME || true
+                       # docker rmi $USERNAME/$IMAGE_NAME:$BUILD_TAG
                    '''
                }
            }
