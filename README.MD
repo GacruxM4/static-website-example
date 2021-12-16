@@ -19,3 +19,6 @@ All of the site templates I create for [HTML5 UP](https://html5up.net/) are lice
 ... all for free, yo. In exchange, just give HTML5 UP credit for the design and tell your friends about it :)
 
 More info [here](https://html5up.net/license).
+
+
+[![Build Status](http://100.26.254.121:8080/buildStatus/icon?job=static-website-example&build=6)](http://100.26.254.121:8080/job/static-website-example/6/)
