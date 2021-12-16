@@ -21,4 +21,4 @@ All of the site templates I create for [HTML5 UP](https://html5up.net/) are lice
 More info [here](https://html5up.net/license).
 
 
-[![Build Status](http://100.26.254.121:8080/buildStatus/icon?job=static-website-example&build=6)](http://100.26.254.121:8080/job/static-website-example/6/)
+[![Build Status](http://100.26.254.121:8080/buildStatus/icon?job=static-website-example)](http://100.26.254.121:8080/job/static-website-example/)
