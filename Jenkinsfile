@@ -28,7 +28,7 @@ pipeline {
                    sh '''
                        docker stop $CONTAINER_NAME || true
                        docker rm $CONTAINER_NAME || true
-                       docker run --name $CONTAINER_NAME -d -p 5000:80 $USERNAME/$IMAGE_NAME:$BUILD_TAG
+                       docker run --name $CONTAINER_NAME -d -e PORT=5000 -p 5000:80 $USERNAME/$IMAGE_NAME:$BUILD_TAG
                        sleep 7
                    '''
                }
@@ -40,7 +40,7 @@ pipeline {
            steps {
                script{
                    sh '''
-                       curl http://localhost:5000 | grep -iq "Aurélien Dimension"
+                       curl http://localhost/ | grep -iq "Aurélien Dimension"
                    '''
                }
            }
